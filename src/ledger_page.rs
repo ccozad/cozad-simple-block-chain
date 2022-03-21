@@ -7,7 +7,7 @@ use serde::{Serialize, Deserialize};
 /// A Ledger Page is a collection of Blocks
 #[derive(Serialize, Deserialize, Debug)]
 pub struct LedgerPage {
-    /// Storage for nodes in the graph
+    /// Storage for blocks
     entries: Vec<Block>,
     first_hash: String,
     last_hash: Option<String>,
@@ -19,8 +19,7 @@ impl LedgerPage {
     /// 
     /// # Arguments
     ///
-    /// * `parent_hash` - The hash of the parent
-    /// * `transactions` - Information captured in block
+    /// * `initial_parent_hash` - The first parent hash on the page
     #[allow(dead_code)]
     pub fn new(initial_parent_hash: &str) -> Self {
         let entries = Vec::new();
@@ -33,6 +32,7 @@ impl LedgerPage {
         }
     }
 
+    /// Adds a transaction to the ledger if it hasn't been finalized
     pub fn add_transaction(&mut self, transactions: &str) {
         if !self.finalized {
             if self.entries.len() > 0 {
@@ -48,7 +48,10 @@ impl LedgerPage {
         }
     }
 
-    /// Checks to see if all Blocks in the collection verify and each item in the collection satisfies the requirement `Block[n].hash` equals `Block[n+1].parent_hash`
+    /// Checks to see if all Blocks in the collection verify and linked list integrity stands
+    /// 
+    /// Linked list integrity means each item in the collection satisfies the requirement 
+    /// `Block[n].hash` equals `Block[n+1].parent_hash`
     #[allow(dead_code)]
     pub fn verify(&self) -> bool {
         let mut parent_hash = self.first_hash.as_str();
