@@ -1,5 +1,5 @@
 # cozad-simple-block-chain
-A Rust implementation of a simple block chain operations
+A Rust implementation of simple block chain operations
 
 ![MIT License](https://img.shields.io/github/license/ccozad/cozad-simple-block-chain) 
 ![Build Status](https://img.shields.io/github/workflow/status/ccozad/cozad-simple-block-chain/Build) 
