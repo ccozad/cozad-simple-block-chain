@@ -84,77 +84,82 @@ impl FromStr for Block {
     }
 }
 
-#[test]
-fn test_constructor() {
-    let b = Block::new("MA==", "Hello World");
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    assert_eq!("MA==", b.parent_hash);
-    assert_eq!("Hello World", b.transactions);
-    assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", b.hash);
-}
+    #[test]
+    fn constructor() {
+        let b = Block::new("MA==", "Hello World");
 
-#[test]
-fn test_parent_hash() {
-    let b = Block::new("MA==", "Hello World");
+        assert_eq!("MA==", b.parent_hash);
+        assert_eq!("Hello World", b.transactions);
+        assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", b.hash);
+    }
 
-    assert_eq!("MA==", b.parent_hash());
-}
+    #[test]
+    fn parent_hash() {
+        let b = Block::new("MA==", "Hello World");
 
-#[test]
-fn test_transactions() {
-    let b = Block::new("MA==", "Hello World");
+        assert_eq!("MA==", b.parent_hash());
+    }
 
-    assert_eq!("Hello World", b.transactions());
-}
+    #[test]
+    fn transactions() {
+        let b = Block::new("MA==", "Hello World");
 
-#[test]
-fn test_hash() {
-    let b = Block::new("MA==", "Hello World");
+        assert_eq!("Hello World", b.transactions());
+    }
 
-    assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", b.hash());
-}
+    #[test]
+    fn hash() {
+        let b = Block::new("MA==", "Hello World");
 
-#[test]
-fn test_verify_true() {
-    let b = Block::new("MA==", "Hello World");
+        assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", b.hash());
+    }
 
-    assert_eq!(true, b.verify());
+    #[test]
+    fn verify_true() {
+        let b = Block::new("MA==", "Hello World");
 
-    let b2 = Block {
-        parent_hash: String::from("MA=="),
-        transactions: String::from("Hello World"),
-        hash: String::from("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=")
-    };
+        assert_eq!(true, b.verify());
 
-    assert_eq!(true, b2.verify());
-}
+        let b2 = Block {
+            parent_hash: String::from("MA=="),
+            transactions: String::from("Hello World"),
+            hash: String::from("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=")
+        };
 
-#[test]
-fn test_verify_false() {
-    let b = Block {
-        parent_hash: String::from("MA=="),
-        transactions: String::from("foo bar"),
-        hash: String::from("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=")
-    };
+        assert_eq!(true, b2.verify());
+    }
 
-    assert_eq!(false, b.verify());
-}
+    #[test]
+    fn verify_false() {
+        let b = Block {
+            parent_hash: String::from("MA=="),
+            transactions: String::from("foo bar"),
+            hash: String::from("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=")
+        };
 
-#[test]
-fn test_to_string() {
-    let b = Block::new("MA==", "Hello World");
-    let serialized_b = b.to_string();
-    let expected_result = r#"{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
+        assert_eq!(false, b.verify());
+    }
 
-    assert_eq!(expected_result, serialized_b);
-}
+    #[test]
+    fn to_string() {
+        let b = Block::new("MA==", "Hello World");
+        let serialized_b = b.to_string();
+        let expected_result = r#"{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
 
-#[test]
-fn test_from_str() {
-    let serialized_b = r#"{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
-    let b = Block::from_str(&serialized_b).unwrap();
+        assert_eq!(expected_result, serialized_b);
+    }
 
-    assert_eq!("MA==", b.parent_hash);
-    assert_eq!("Hello World", b.transactions);
-    assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", b.hash);
+    #[test]
+    fn from_str() {
+        let serialized_b = r#"{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
+        let b = Block::from_str(&serialized_b).unwrap();
+
+        assert_eq!("MA==", b.parent_hash);
+        assert_eq!("Hello World", b.transactions);
+        assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", b.hash);
+    }
 }

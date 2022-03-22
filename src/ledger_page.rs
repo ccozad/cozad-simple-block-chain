@@ -96,106 +96,111 @@ impl FromStr for LedgerPage {
     }
 }
 
-#[test]
-fn test_constructor() {
-    let lp = LedgerPage::new("MA==");
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    assert_eq!(0, lp.entries.len());
-}
+    #[test]
+    fn constructor() {
+        let lp = LedgerPage::new("MA==");
 
-#[test]
-fn test_first_hash() {
-    let mut lp = LedgerPage::new("MA==");
-    lp.add_transaction("Hello World");
+        assert_eq!(0, lp.entries.len());
+    }
 
-    assert_eq!("MA==", lp.first_hash());
-}
+    #[test]
+    fn first_hash() {
+        let mut lp = LedgerPage::new("MA==");
+        lp.add_transaction("Hello World");
 
-#[test]
-fn test_last_hash() {
-    let mut lp = LedgerPage::new("MA==");
-    lp.add_transaction("Hello World");
+        assert_eq!("MA==", lp.first_hash());
+    }
 
-    assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", lp.last_hash().unwrap());
-}
+    #[test]
+    fn last_hash() {
+        let mut lp = LedgerPage::new("MA==");
+        lp.add_transaction("Hello World");
 
-#[test]
-fn test_entries() {
-    let mut lp = LedgerPage::new("MA==");
-    lp.add_transaction("Hello World");
+        assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", lp.last_hash().unwrap());
+    }
 
-    let entries = lp.entries();
+    #[test]
+    fn entries() {
+        let mut lp = LedgerPage::new("MA==");
+        lp.add_transaction("Hello World");
 
-    assert_eq!(1, entries.len());
-    assert_eq!("MA==", entries[0].parent_hash());
-    assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", entries[0].hash());
-    assert_eq!("Hello World", entries[0].transactions());
-    assert_eq!(true, entries[0].verify())
-}
+        let entries = lp.entries();
 
-#[test]
-fn test_add_initial_transaction() {
-    let mut lp = LedgerPage::new("MA==");
-    lp.add_transaction("Hello World");
+        assert_eq!(1, entries.len());
+        assert_eq!("MA==", entries[0].parent_hash());
+        assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", entries[0].hash());
+        assert_eq!("Hello World", entries[0].transactions());
+        assert_eq!(true, entries[0].verify())
+    }
 
-    assert_eq!(1, lp.entries.len());
-    assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", lp.last_hash.unwrap());
-    assert_eq!("MA==", lp.first_hash);
-}
+    #[test]
+    fn add_initial_transaction() {
+        let mut lp = LedgerPage::new("MA==");
+        lp.add_transaction("Hello World");
 
-#[test]
-fn test_add_many_transactions() {
-    let mut lp = LedgerPage::new("MA==");
-    lp.add_transaction("Hello World");
-    lp.add_transaction("Hello World Again");
+        assert_eq!(1, lp.entries.len());
+        assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", lp.last_hash.unwrap());
+        assert_eq!("MA==", lp.first_hash);
+    }
 
-    assert_eq!(2, lp.entries.len());
-    assert_eq!("Ga5LMtyBWQuto1w4WWAttuHQMrHn2N5YqJ1T7f+INJ4=", lp.last_hash.unwrap());
-    assert_eq!("MA==", lp.first_hash);
-}
+    #[test]
+    fn add_many_transactions() {
+        let mut lp = LedgerPage::new("MA==");
+        lp.add_transaction("Hello World");
+        lp.add_transaction("Hello World Again");
 
-#[test]
-fn test_verify_true() {
-    let mut lp = LedgerPage::new("MA==");
-    lp.add_transaction("Hello World");
-    lp.add_transaction("Hello World Again");
+        assert_eq!(2, lp.entries.len());
+        assert_eq!("Ga5LMtyBWQuto1w4WWAttuHQMrHn2N5YqJ1T7f+INJ4=", lp.last_hash.unwrap());
+        assert_eq!("MA==", lp.first_hash);
+    }
 
-    println!("{}", lp);
+    #[test]
+    fn verify_true() {
+        let mut lp = LedgerPage::new("MA==");
+        lp.add_transaction("Hello World");
+        lp.add_transaction("Hello World Again");
 
-    assert_eq!(2, lp.entries.len());
-    assert_eq!(true, lp.verify());
-}
+        println!("{}", lp);
 
-#[test]
-fn test_to_string() {
-    let mut lp = LedgerPage::new("MA==");
-    lp.add_transaction("Hello World");
+        assert_eq!(2, lp.entries.len());
+        assert_eq!(true, lp.verify());
+    }
 
-    let lp_serialized = lp.to_string();
-    let expected_result = r#"{"entries":[{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}],"first_hash":"MA==","last_hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
+    #[test]
+    fn to_string() {
+        let mut lp = LedgerPage::new("MA==");
+        lp.add_transaction("Hello World");
 
-    assert_eq!(expected_result, lp_serialized);
-}
+        let lp_serialized = lp.to_string();
+        let expected_result = r#"{"entries":[{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}],"first_hash":"MA==","last_hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
 
-#[test]
-fn test_from_str() {
-    let lp_serialized = r#"{"entries":[{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}],"first_hash":"MA==","last_hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
-    let lp = LedgerPage::from_str(&lp_serialized).unwrap();
+        assert_eq!(expected_result, lp_serialized);
+    }
 
-    assert_eq!(1, lp.entries.len());
-    assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", lp.last_hash.unwrap());
-    assert_eq!("MA==", lp.first_hash);
-}
+    #[test]
+    fn from_str() {
+        let lp_serialized = r#"{"entries":[{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}],"first_hash":"MA==","last_hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
+        let lp = LedgerPage::from_str(&lp_serialized).unwrap();
 
-#[test]
-fn test_verify_false() {
-    let lp_serialized = r#"{"entries":[{"parent_hash":"MA==","transactions":"Hello World","hash":"AGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}],"first_hash":"MA==","last_hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
-    let lp = LedgerPage::from_str(&lp_serialized).unwrap();
+        assert_eq!(1, lp.entries.len());
+        assert_eq!("RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g=", lp.last_hash.unwrap());
+        assert_eq!("MA==", lp.first_hash);
+    }
 
-    assert_eq!(false, lp.verify());
+    #[test]
+    fn verify_false() {
+        let lp_serialized = r#"{"entries":[{"parent_hash":"MA==","transactions":"Hello World","hash":"AGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}],"first_hash":"MA==","last_hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
+        let lp = LedgerPage::from_str(&lp_serialized).unwrap();
 
-    let lp_serialized2 = r#"{"entries":[{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}],"first_hash":"GA==","last_hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
-    let lp2 = LedgerPage::from_str(&lp_serialized2).unwrap();
+        assert_eq!(false, lp.verify());
 
-    assert_eq!(false, lp2.verify());
+        let lp_serialized2 = r#"{"entries":[{"parent_hash":"MA==","transactions":"Hello World","hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}],"first_hash":"GA==","last_hash":"RGUWhlfUKobrBmf5xjKPHUCBVe2wuP+FbDrLfQXEz2g="}"#;
+        let lp2 = LedgerPage::from_str(&lp_serialized2).unwrap();
+
+        assert_eq!(false, lp2.verify());
+    }
 }
